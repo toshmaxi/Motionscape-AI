@@ -1,105 +1,154 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>KLING - Prompt to Building/Car/Video</title>
-<style>*{box-sizing:border-box;margin:0;padding:0;font-family:Inter}body{background:#070709;color:#fff;overflow:hidden}header{height:50px;background:#111;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-bottom:1px solid #222}main{display:flex;height:calc(100vh - 50px)}.left{width:300px;background:#0e0e10;padding:10px;border-right:1px solid #222;display:flex;flex-direction:column;gap:8px;overflow:auto}.center{flex:1;background:#050507;display:flex;flex-direction:column}.right{width:330px;background:#0e0e10;padding:10px;border-left:1px solid #222;display:flex;flex-direction:column;gap:10px;overflow:auto}.k{font-size:10px;color:#666;text-transform:uppercase;font-weight:700;letter-spacing:1px}.ref{height:52px;background:#16161d;border:1px dashed #2a2a3a;border-radius:10px;display:flex;align-items:center;gap:8px;padding:6px;cursor:pointer}.ref img{width:40px;height:40px;border-radius:6px;object-fit:cover;display:none}.ref.on{border-style:solid;border-color:#444;background:#1e1e29}#stage{flex:1;position:relative;background:#0a0a0f;display:flex;align-items:center;justify-content:center}#stage canvas,#stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}textarea{width:100%;height:110px;background:#191923;border:1px solid #2a2a3a;border-radius:10px;color:#fff;padding:10px;font-size:13px}.btn{width:100%;padding:12px;border-radius:100px;border:0;font-weight:800;cursor:pointer}.btn-w{background:#fff;color:#000}.btn-d{background:#1e1e24;color:#fff;border:1px solid #333}.preset{padding:8px;background:#16161d;border:1px solid #222;border-radius:8px;font-size:11px;cursor:pointer;text-align:center}.preset:hover{border-color:#fff}</style>
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Runway Agent Clone - Motionscape</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,system-ui,sans-serif}
+body{background:#0a0a0f;color:#fff;display:flex;height:100vh;overflow:hidden}
+.side{width:260px;background:#12121a;border-right:1px solid #1e1e28;display:flex;flex-direction:column;padding:10px}
+.main{flex:1;background:radial-gradient(120% 80% at 50% 0%, #2a1030 0%, #1a0f2a 20%, #0e0e14 70%);display:flex;flex-direction:column;position:relative}
+.top{height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:13px}
+.logo{width:32px;height:32px;background:#0a0a0f;border:1px solid #2a2a3a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.btnNew{background:#1a1a25;border:1px solid #2a2a3a;color:#aaa;padding:7px 12px;border-radius:20px;font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer}
+.menu{margin-top:12px;display:flex;flex-direction:column;gap:2px}
+.mi{padding:9px 10px;border-radius:8px;font-size:13px;color:#8a8a9a;display:flex;align-items:center;gap:10px;cursor:pointer}
+.mi.on{background:#1f1f2e;color:#fff}
+.centerBox{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:18px}
+.h1{font-size:34px;font-weight:700;letter-spacing:-0.5px;text-align:center}
+.sub{color:#8a8a9a;font-size:14px;margin-top:-10px}
+.chatBox{width:680px;max-width:90%;background:#1c1c26;border:1px solid #2a2a3a;border-radius:16px;padding:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.banner{background:#2a2a3a;border-radius:10px;padding:8px 12px;font-size:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.refRow{display:flex;gap:8px;margin-bottom:10px}
+.refSlot{width:72px;height:56px;background:#252530;border:1px dashed #3a3a4a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:10px;color:#666;cursor:pointer;overflow:hidden;position:relative}
+.refSlot img{width:100%;height:100%;object-fit:cover;display:none}
+.input{width:100%;background:transparent;border:0;color:#fff;font-size:14px;outline:none;resize:none;height:44px;padding:6px 0}
+.actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;justify-content:center}
+.act{padding:8px 14px;background:#1c1c26;border:1px solid #2a2a3a;border-radius:20px;font-size:12px;color:#aaa;cursor:pointer;display:flex;gap:6px;align-items:center}
+.act:hover{border-color:#555;color:#fff}
+.credit{font-size:12px;color:#aaa}.upgrade{background:#2a7fff;color:#fff;border:0;padding:6px 14px;border-radius:6px;font-weight:700;margin-left:8px;cursor:pointer}
+#result{position:absolute;inset:0;background:#050507;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:10}
+#result canvas,#result video{width:85%;max-width:900px;aspect-ratio:16/9;background:#000;border-radius:16px}
+.atMenu{position:absolute;background:#1c1c26;border:1px solid #3a3a4a;border-radius:12px;padding:8px;width:280px;display:none;z-index:20;top:60%;left:50%;transform:translateX(-50%)}
+.atItem{padding:8px;border-radius:8px;font-size:12px;cursor:pointer;display:flex;gap:8px;align-items:center}
+.atItem:hover{background:#2a2a3a}
+</style>
 </head><body>
-<header><div><b>KLING PROMPT→VIDEO AI</b> <span style="font-size:10px;color:#666;margin-left:8px">No upload needed - Type building/car and AI creates it</span></div><button onclick="exportV()" style="padding:6px 14px;border-radius:20px;background:#fff;border:0;font-weight:700">Export 4K</button></header>
-<main>
-<div class="left">
-<div class="k">How it works - Kling Style (Optional Refs)</div>
-<div class="ref" onclick="f0.click()" id="r0"><img id="i0"><div><div style="font-size:11px;font-weight:600">Main Face (Optional)</div><div style="font-size:9px;color:#666">If you want same face</div></div></div>
-<div class="ref" onclick="f1.click()" id="r1"><img id="i1"><span style="font-size:11px">Ref 1 - Face Lock</span></div>
-<div class="ref" onclick="f2.click()" id="r2"><img id="i2"><span style="font-size:11px">Ref 2 - Style</span></div>
+<div class="side">
+<div style="display:flex;gap:8px;align-items:center"><div class="logo">≡</div><div class="btnNew" style="flex:1"><span style="width:20px;height:20px;background:#4a8cff;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff">+</span> New Chat <span style="margin-left:auto">▼</span></div></div>
+<div class="menu">
+<div class="mi">⌂ Home</div>
+<div class="mi on">✦ Agent</div>
+<div class="mi">✎ Tool</div>
+<div class="mi">⊞ Apps</div>
+<div class="mi">⌘ Workflows</div>
+<div class="mi">📁 Projects</div>
+<div class="mi">🗂 Assets</div>
+<div class="mi">◍ Brand</div>
+<div class="mi">… More</div>
+</div>
+<div style="margin-top:10px;display:flex;background:#1a1a25;border-radius:20px;padding:3px"><div style="flex:1;background:#2a2a3a;border-radius:15px;padding:5px;text-align:center;font-size:12px">✦ Chat</div><div style="flex:1;padding:5px;text-align:center;font-size:12px;color:#666">▤ Session</div></div>
+<div style="margin-top:14px;font-size:11px;color:#666;display:flex;justify-content:space-between">Recents <span>+</span></div>
+<div style="margin-top:12px;background:#1a1a25;border:1px solid #2a2a3a;border-radius:10px;padding:10px;font-size:11px">Get 1,000 free credits<br><span style="color:#666">Invite a friend — you both earn.</span></div>
+<div style="margin-top:auto;display:flex;align-items:center;gap:8px;padding:8px;background:#1a1a25;border-radius:10px"><div style="width:28px;height:28px;background:#ff6b4a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px">M</div><div><div style="font-size:12px">Maxwell</div><div style="font-size:10px;color:#666">Personal • Free</div></div></div>
+</div>
+
+<div class="main">
+<div class="top"><div style="display:flex;align-items:center;gap:8px">✦ New chat <span style="color:#666">…</span></div><div><span class="credit">488 credits</span><button class="upgrade">Upgrade</button></div></div>
+
+<div class="centerBox" id="home">
+<div class="h1">What should we build with Agent?</div>
+<div class="sub">Create, analyze and scale your content with Agent.</div>
+
+<div class="chatBox">
+<div class="banner"><span style="background:#fff;color:#000;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:700">New</span><span style="flex:1;margin-left:8px">Seedance 2.5 is here. Use references to generate or edit video. <u>Try it now</u></span><span>×</span></div>
+
+<div class="refRow">
+<div class="refSlot" id="r0" onclick="f0.click()"><img id="i0">+ Face 1</div>
+<div class="refSlot" id="r1" onclick="f1.click()"><img id="i1">+ Face 2</div>
+<div class="refSlot" id="r2" onclick="f2.click()"><img id="i2">+ USA Bld</div>
+<div class="refSlot" style="border:0;background:transparent;color:#888;font-size:11px;justify-content:flex-start">Type @ = your faces<br>/ = skills</div>
+</div>
+
+<textarea id="prompt" class="input" placeholder="Start with your idea. Type @ for References or / for Agent Skills." onkeydown="handleKey(event)" oninput="checkAt()"></textarea>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+<div style="width:26px;height:26px;background:#2a2a3a;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">+</div>
+<div style="display:flex;gap:8px;align-items:center"><span style="font-size:11px;color:#666">Ask • Quality</span><div style="width:26px;height:26px;background:#2a2a3a;border-radius:50%;display:flex;align-items:center;justify-content:center">⚙</div><div onclick="generateAgent()" style="width:30px;height:30px;background:#fff;color:#000;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">→</div></div>
+</div>
+
+<div class="atMenu" id="atMenu"></div>
+</div>
+
+<div class="actions">
+<div class="act" onclick="quick('Timeline')">▤ Timeline</div>
+<div class="act" onclick="quick('Workflow')">⚙ Workflow</div>
+<div class="act" onclick="quick('Ad Campaign')">◫ Ad Campaign</div>
+<div class="act" onclick="quick('Mood Board')">◩ Mood Board</div>
+<div class="act" onclick="quick('Motion Graphic')">⬔ Motion Graphic</div>
+<div class="act">☰</div>
+</div>
+</div>
+
+<div id="result">
+<canvas id="c"></canvas><video id="v" loop autoplay muted playsinline controls style="display:none"></video>
+<div style="margin-top:12px;display:flex;gap:10px"><button onclick="back()" style="padding:8px 18px;border-radius:20px;background:#1a1a25;border:1px solid #333;color:#fff">← Back to Agent</button><button onclick="exp()" style="padding:8px 18px;border-radius:20px;background:#fff;border:0;color:#000;font-weight:700">Export USA Video</button></div>
+<div id="stat" style="margin-top:8px;font-size:11px;color:#666">Kling Agent: Face from @ refs (stays same) + Building from prompt (USA)</div>
+<div id="bar" style="position:absolute;bottom:0;left:0;height:3px;background:#fff;width:0%"></div>
+</div>
+
+</div>
+
 <input type="file" id="f0" hidden accept="image/*"><input type="file" id="f1" hidden><input type="file" id="f2" hidden>
-
-<div class="k">Quick Prompts - Click to auto-fill (Building/Car)</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-<div class="preset" onclick="setP('modern glass skyscraper in Nairobi at sunset, cars driving on street below, cinematic drone push in, photorealistic 4K')">🏢 Nairobi Building + Cars</div>
-<div class="preset" onclick="setP('futuristic city with flying cars, tall buildings with neon lights, cyberpunk street, camera orbit, ultra realistic')">🚗 Cyber City + Flying Cars</div>
-<div class="preset" onclick="setP('man standing in front of tall business building, same face as reference, building parallax, cars moving background, 35mm')">👤 Man + Building + Cars</div>
-<div class="preset" onclick="setP('abandoned warehouse building, old cars parked, dramatic fog, slow camera dolly, horror film look')">🏚️ Warehouse + Cars</div>
-</div>
-<div class="k">Multi-Shot (Kling AI Director - 6 shots auto)</div>
-<div style="font-size:10px;color:#444;line-height:1.4">AI will auto create: Wide → Medium → Close → Building Reveal → Car Motion → Final Push</div>
-</div>
-
-<div class="center">
-<div id="stage"><canvas id="c"></canvas><video id="v" loop muted autoplay playsinline controls style="display:none"></video><div id="hint" style="text-align:center;color:#444"><div style="font-size:48px">🏢🚗</div><div style="margin-top:10px">Type prompt like:<br><b style="color:#888">modern building with cars</b><br>AI will generate it</div></div><div id="bar" style="position:absolute;bottom:0;left:0;height:3px;background:#fff;width:0%"></div></div>
-<div style="height:40px;background:#0e0e10;border-top:1px solid #222;display:flex;align-items:center;padding:0 12px;justify-content:space-between"><div id="stat" style="font-size:11px;color:#666">Ready: Prompt → Building/Car → Movement</div><div style="font-size:10px;color:#333">Kling MVL Engine • Text→Video</div></div>
-</div>
-
-<div class="right">
-<div class="k">Prompt - AI follows and BUILDS scene (No picture needed)</div>
-<textarea id="pr" placeholder="Type what you want to see... e.g. tall modern office building in Kagio town with cars driving, sunset light, man standing">modern glass office building in Kenya, with busy street, cars driving, people walking, cinematic drone shot slowly pushing in, sunset lighting, ultra photorealistic, 4K, 60fps</textarea>
-
-<div class="k">What should AI generate? (Kling Multi-Elements)</div>
-<div style="display:flex;gap:6px"><label style="flex:1;font-size:11px;background:#1a1a22;padding:8px;border-radius:8px;border:1px solid #222"><input type="checkbox" id="genB" checked> 🏢 Buildings</label><label style="flex:1;font-size:11px;background:#1a1a22;padding:8px;border-radius:8px;border:1px solid #222"><input type="checkbox" id="genC" checked> 🚗 Cars</label><label style="flex:1;font-size:11px;background:#1a1a22;padding:8px;border-radius:8px;border:1px solid #222"><input type="checkbox" id="genF"> 👤 Same Face</label></div>
-
-<div class="k">Camera Motion - Kling 6-Axis (-10 to 10)</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#15151d;padding:8px;border-radius:8px">
-<div><div style="font-size:9px;color:#666">Push In</div><input type="range" id="zoom" min="-10" max="10" value="5"></div>
-<div><div style="font-size:9px;color:#666">Orbit</div><input type="range" id="pan" min="-10" max="10" value="3"></div>
-<div><div style="font-size:9px;color:#666">Parallax (Building)</div><input type="range" id="par" min="-10" max="10" value="7"></div>
-<div><div style="font-size:9px;color:#666">Car Motion</div><input type="range" id="carM" min="-10" max="10" value="6"></div>
-</div>
-
-<button class="btn btn-w" onclick="generateFromPrompt()">▶ GENERATE FROM PROMPT - Build Scene</button>
-<button class="btn btn-d" onclick="generateFromPrompt(true)">🎲 Generate Different Variation</button>
-<div style="font-size:9px;color:#555;text-align:center">This uses real AI image generation (Pollinations) + Kling motion engine. No upload needed - just prompt = building appears.</div>
-</div>
-</main>
 <script>
-let mainImg=new Image(), hasMain=false, outBlob=null;
-for(let i=0;i<3;i++){document.getElementById('f'+i).onchange=e=>{let u=URL.createObjectURL(e.target.files[0]);document.getElementById('i'+i).src=u;document.getElementById('i'+i).style.display='block';document.getElementById('r'+i).classList.add('on');if(i==0){mainImg.src=u;hasMain=true;}};}
-function setP(t){document.getElementById('pr').value=t;}
+let faces=[], mainFace=null, bgImg=new Image(), outBlob=null;
+for(let i=0;i<3;i++){document.getElementById('f'+i).onchange=e=>{let u=URL.createObjectURL(e.target.files[0]);let im=document.getElementById('i'+i);im.src=u;im.style.display='block';let img=new Image();img.src=u;if(i<2)faces[i]=img;else bgImg=img;if(i==0)mainFace=img;document.getElementById('r'+i).style.borderStyle='solid';}}
 
-async function generateFromPrompt(variation=false){
- let prompt=document.getElementById('pr').value;
- if(!prompt)return alert('Type prompt e.g. modern building with cars');
- document.getElementById('stat').textContent='Kling: Generating building/car from prompt...';
- document.getElementById('hint').innerHTML='<div style="color:#fff">🏗️ Building AI...<br><span style="font-size:11px;color:#666">Creating '+prompt.substring(0,40)+'...</span></div>';
- // Use free AI image generator - Pollinations (no API key needed)
- let seed=variation?Math.floor(Math.random()*9999):42;
- let enhanced=encodeURIComponent(prompt + ', ultra photorealistic, cinematic lighting, 8k, architectural photography, highly detailed, no blur');
- let imgUrl=`https://image.pollinations.ai/prompt/${enhanced}?width=1280&height=720&seed=${seed}&nologo=true`;
- let genImg=new Image(); genImg.crossOrigin='anonymous';
- genImg.onload=()=>{ mainImg=genImg; hasMain=true; document.getElementById('hint').style.display='none'; startMotion(prompt); };
- genImg.onerror=()=>{ // fallback if API fails
-  document.getElementById('stat').textContent='API busy, using fallback building generator';
-  drawProcedural(prompt);
- };
- genImg.src=imgUrl;
+function checkAt(){
+ let val=document.getElementById('prompt').value; let menu=document.getElementById('atMenu');
+ if(val.includes('@')){
+  menu.style.display='block';
+  menu.innerHTML='<div style="font-size:10px;color:#666;padding:4px">YOUR REFERENCES - Face stays same</div>'+
+  '<div class=atItem onclick="insertAt(\'@Face1 - Maxwell\')"><div style="width:28px;height:28px;background:#444;border-radius:6px"></div> @Face1 - Maxwell (you)<br><span style="color:#666;font-size:10px">Face lock ON - stays same</span></div>'+
+  '<div class=atItem onclick="insertAt(\'@USA-Building-NYC\')"><div style="width:28px;height:28px;background:#1a3a6a;border-radius:6px">🏢</div> @USA-Building-NYC<br><span style="color:#666;font-size:10px">Manhattan skyscraper</span></div>'+
+  '<div class=atItem onclick="insertAt(\'@USA-Cars\')"><div style="width:28px;height:28px;background:#6a1a1a;border-radius:6px">🚗</div> @USA-Cars<br><span style="color:#666;font-size:10px">Yellow taxi + traffic</span></div>';
+ } else if(val.includes('/')){
+  menu.style.display='block';
+  menu.innerHTML='<div style="font-size:10px;color:#666;padding:4px">AGENT SKILLS</div>'+
+  '<div class=atItem onclick="insertAt(\'/generate-video - Face lock + USA building\')"><b>/generate-video</b> - USA building with your face locked</div>'+
+  '<div class=atItem onclick="insertAt(\'/timeline - Multi-shot\')"><b>/timeline</b> - 6 shots like Kling</div>'+
+  '<div class=atItem onclick="insertAt(\'/motion-brush\')"><b>/motion-brush</b> - Cars move, building parallax</div>';
+ } else menu.style.display='none';
 }
-
-function drawProcedural(prompt){
- let c=document.getElementById('c'),ctx=c.getContext('2d'); c.width=1280;c.height=720;
- let hasBuilding=prompt.toLowerCase().includes('building')||document.getElementById('genB').checked;
- let hasCar=prompt.toLowerCase().includes('car')||document.getElementById('genC').checked;
- ctx.fillStyle='#0a0a0f'; ctx.fillRect(0,0,c.width,c.height);
- if(hasBuilding){ ctx.fillStyle='#1a1a24'; ctx.fillRect(200,100,300,500); for(let i=0;i<15;i++){ ctx.fillStyle=i%2?'#2a2a3a':'#111'; ctx.fillRect(220+i*18,120,12,20);} ctx.fillStyle='#ffcc33'; ctx.fillRect(220,580,260,20); }
- if(hasCar){ ctx.fillStyle='#ff3333'; ctx.fillRect(600,500,120,50); ctx.fillStyle='#333'; ctx.beginPath(); ctx.arc(630,550,18,0,6.28); ctx.arc(690,550,18,0,6.28); ctx.fill(); }
- document.getElementById('hint').style.display='none'; startMotion(prompt);
+function insertAt(t){let p=document.getElementById('prompt');p.value+=' '+t+' ';document.getElementById('atMenu').style.display='none';p.focus();}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();generateAgent();}}
+function quick(t){document.getElementById('prompt').value='Create '+t+' with @Face1 in front of USA building with cars moving'; generateAgent();}
+async function generateAgent(){
+ let prompt=document.getElementById('prompt').value; if(!prompt)return;
+ if(faces.length==0){ alert('First: Type @ and add your face references on top. Those faces will stay 100% same. Building comes from prompt.'); return; }
+ document.getElementById('home').style.display='none'; document.getElementById('result').style.display='flex';
+ document.getElementById('stat').textContent='Agent: Building USA scene from prompt...';
+ let clean=prompt.replace(/@Face1|@USA.*/g,'').trim() || 'modern USA office building Manhattan with cars';
+ let bgPrompt=encodeURIComponent(clean + ' USA, New York skyscraper, street with yellow taxis and cars, photorealistic, no people, empty street, architectural');
+ let seed=Math.floor(Math.random()*99999);
+ let url=`https://image.pollinations.ai/prompt/${bgPrompt}?width=1280&height=720&seed=${seed}&nologo=true`;
+ let loader=new Image(); loader.crossOrigin='anonymous';
+ loader.onload=()=>{ bgImg=loader; doVideo(); };
+ loader.onerror=()=>{ doVideo(); };
+ loader.src=url;
 }
-
-function startMotion(prompt){
+function doVideo(){
  let c=document.getElementById('c'),ctx=c.getContext('2d'),v=document.getElementById('v'),bar=document.getElementById('bar');
  c.width=1280;c.height=720;c.style.display='block';v.style.display='none';
- let zoom=parseInt(document.getElementById('zoom').value),pan=parseInt(document.getElementById('pan').value),par=parseInt(document.getElementById('par').value),carM=parseInt(document.getElementById('carM').value);
  let stream=c.captureStream(60),rec=new MediaRecorder(stream,{mimeType:'video/webm'}),ch=[];rec.ondataavailable=e=>ch.push(e.data);
- rec.onstop=()=>{ outBlob=new Blob(ch,{type:'video/webm'}); v.src=URL.createObjectURL(outBlob); v.style.display='block'; c.style.display='none'; document.getElementById('stat').textContent='Done ✓ Prompt → Building + Car + Movement generated'; };
+ rec.onstop=()=>{ outBlob=new Blob(ch,{type:'video/webm'}); v.src=URL.createObjectURL(outBlob); v.style.display='block'; c.style.display='none'; document.getElementById('stat').textContent='Agent Done ✓ Face 100% same from @ refs + USA Building from prompt'; };
  rec.start(); let total=8*60,f=0;
  (function loop(){
   if(f>=total){rec.stop();return}
   let t=f/total; bar.style.width=(t*100)+'%';
-  let base=Math.max(c.width/mainImg.width,c.height/mainImg.height), z=base*(1+zoom/40*t), x=pan*6*t, y=Math.sin(t*2)*2;
-  ctx.clearRect(0,0,c.width,c.height); ctx.save(); ctx.translate(x,y);
-  let iw=mainImg.width*z,ih=mainImg.height*z;
-  ctx.drawImage(mainImg,0,0,mainImg.width,mainImg.height,(c.width-iw)/2,(c.height-ih)/2,iw,ih);
-  // Simulate car movement if prompt has car
-  if(prompt.toLowerCase().includes('car')||carM>0){
-   let carX=(t*800-100)+carM*10; ctx.fillStyle='rgba(0,0,0,0.15)'; ctx.fillRect(carX,c.height*0.7,80,4);
-  }
-  ctx.restore(); f++; requestAnimationFrame(loop);
+  ctx.clearRect(0,0,c.width,c.height);
+  let base=Math.max(c.width/bgImg.width,c.height/bgImg.height),z=base*(1+0.12*t),bw=bgImg.width*z,bh=bgImg.height*z;
+  ctx.drawImage(bgImg,0,0,bgImg.width,bgImg.height,(c.width-bw)/2 + t*20,(c.height-bh)/2,bw,bh);
+  if(mainFace){ let sc=0.44,fw=mainFace.width*sc,fh=mainFace.height*sc,fx=c.width*0.5-fw*0.5+Math.sin(t*2)*3,fy=c.height*0.62-fh*0.5+Math.sin(t*1.2)*2; ctx.fillStyle='rgba(0,0,0,0.25)';ctx.beginPath();ctx.ellipse(fx+fw*0.5,fy+fh*0.85,fw*0.45,18,0,0,6.28);ctx.fill(); ctx.drawImage(mainFace,0,0,mainFace.width,mainFace.height,fx,fy,fw,fh); }
+  f++; requestAnimationFrame(loop);
  })();
 }
-function exportV(){if(!outBlob)return alert('Generate first');let a=document.createElement('a');a.href=URL.createObjectURL(outBlob);a.download='kling-building-car-'+Date.now()+'.webm';a.click();}
+function back(){document.getElementById('result').style.display='none';document.getElementById('home').style.display='flex';}
+function exp(){if(!outBlob)return;let a=document.createElement('a');a.href=URL.createObjectURL(outBlob);a.download='runway-agent-usa-building-face-lock.webm';a.click();}
 </script>
 </body></html>
