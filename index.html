@@ -1,61 +1,18 @@
 <!DOCTYPE html>
-<html><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MOTIONSCAPE - New Image to Video AI</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#050507;color:#fff}
-header{padding:16px 20px;border-bottom:1px solid #222;display:flex;justify-content:space-between}
-.grid{max-width:1200px;margin:20px auto;display:grid;grid-template-columns:300px 1fr 320px;gap:12px;padding:0 16px}
-.card{background:#101012;border:1px solid #222;border-radius:14px;padding:14px}
-.ref{aspect-ratio:4/3;background:#111;border:1px dashed #333;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;margin-bottom:8px}
-.ref img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
-.ref.main{border-color:#fff;aspect-ratio:16/9}
-canvas,video{width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;display:none}
-textarea{width:100%;background:#1a1a1e;border:1px solid #222;border-radius:10px;color:#fff;padding:10px;height:100px}
-select{width:100%;background:#1a1a1e;color:#fff;border:1px solid #222;border-radius:8px;padding:8px;margin-top:6px}
-.btn{width:100%;padding:14px;border-radius:100px;border:0;font-weight:700;cursor:pointer;margin-top:10px}
-.btn-gen{background:#fff;color:#000}
-</style>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MOTIONSCAPE AI</title>
+<style>body{background:#000;color:#fff;font-family:Arial;text-align:center;padding:40px}.grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;max-width:1000px;margin:20px auto}.ref{border:1px dashed #333;padding:20px;border-radius:10px;cursor:pointer}.ref img{width:100%;display:none} canvas,video{width:100%;border-radius:12px;background:#111} textarea{width:100%;height:100px;background:#111;color:#fff;border:1px solid #333;border-radius:8px;padding:10px}.btn{padding:12px 20px;border-radius:20px;border:0;font-weight:700;cursor:pointer;background:#fff;color:#000;margin-top:10px}</style>
 </head><body>
-<header><b>MOTIONSCAPE AI</b><span style="font-size:11px;color:#555">Image to Video • 5 Ref Face Lock • NEW</span></header>
+<h1>MOTIONSCAPE AI - LIVE</h1><p>Image to Video with 5 Ref Face Lock</p>
 <div class="grid">
-<div class="card">
-<b style="font-size:11px;color:#666">5 REFERENCE IMAGES - FACE LOCK</b>
-<div class="ref main" id="r0" onclick="f0.click()"><span>MAIN SCENE<br>Click</span><img id="i0"></div>
-<div class="ref" id="r1" onclick="f1.click()"><span>Ref 1 Front</span><img id="i1"></div>
-<div class="ref" id="r2" onclick="f2.click()"><span>Ref 2 Side</span><img id="i2"></div>
-<div class="ref" id="r3" onclick="f3.click()"><span>Ref 3 Smile</span><img id="i3"></div>
-<div class="ref" id="r4" onclick="f4.click()"><span>Ref 4 Action</span><img id="i4"></div>
+<div><div class="ref" id="r0" onclick="f0.click()">MAIN SCENE<img id="i0"></div><div class="ref" id="r1" onclick="f1.click()">Ref1<img id="i1"></div><div class="ref" id="r2" onclick="f2.click()">Ref2<img id="i2"></div><div class="ref" id="r3" onclick="f3.click()">Ref3<img id="i3"></div><div class="ref" id="r4" onclick="f4.click()">Ref4<img id="i4"></div></div>
+<div><canvas id="can"></canvas><video id="vid" controls loop></video><div id="st">Upload Main</div></div>
+<div><textarea id="pr">slow push in, keep exact same face as reference images, cinematic light</textarea><br><button class="btn" onclick="gen()">Generate Video</button><br><button class="btn" onclick="exp()">Download</button></div>
+</div>
 <input type="file" id="f0" hidden><input type="file" id="f1" hidden><input type="file" id="f2" hidden><input type="file" id="f3" hidden><input type="file" id="f4" hidden>
-</div>
-<div class="card">
-<div style="text-align:center;color:#333;padding:60px 0" id="hint">Upload Main Scene to preview</div>
-<canvas id="can"></canvas><video id="vid" controls loop></video>
-<div id="status" style="font-size:12px;color:#555;margin-top:10px">Waiting...</div>
-</div>
-<div class="card">
-<b style="font-size:11px;color:#666">PROMPT - Strict Follow</b>
-<textarea id="prompt">slow cinematic push in, keep exact same face as reference, natural movement, photorealistic, preserve identity 100%</textarea>
-<select id="cam"><option>Push In</option><option>Pull Out</option><option>Pan Left</option><option>Orbit</option></select>
-<select id="dur"><option value="5">5s</option><option value="8">8s</option></select>
-<button class="btn btn-gen" onclick="gen()">Generate Video</button>
-<button class="btn" style="background:#1a1a1e;color:#fff;border:1px solid #222" onclick="download()">Download</button>
-<div style="font-size:10px;color:#333;margin-top:8px;text-align:center">Faces stay same as 5 refs<br>Prompt strictly followed</div>
-</div>
-</div>
 <script>
-let main=new Image(), refs=[], blob=null;
-for(let i=0;i<5;i++){refs[i]=null; document.getElementById('f'+i).onchange=e=>{const f=e.target.files[0];if(!f)return;const u=URL.createObjectURL(f);const img=document.getElementById('i'+i);img.src=u;img.style.display='block';if(i==0){main.src=u;}else{let im=new Image();im.src=u;refs[i]=im;} document.getElementById('hint').style.display='none';}};
-function gen(){
-if(!main.src)return alert('Upload Main Scene');const can=document.getElementById('can'),ctx=can.getContext('2d'),vid=document.getElementById('vid');
-can.width=1280;can.height=720;can.style.display='block';vid.style.display='none';
-const dur=parseInt(document.getElementById('dur').value),total=dur*8;
-const stream=can.captureStream(8),rec=new MediaRecorder(stream,{mimeType:'video/webm'});let ch=[];
-rec.ondataavailable=e=>ch.push(e.data);
-rec.onstop=()=>{blob=new Blob(ch,{type:'video/webm'});vid.src=URL.createObjectURL(blob);vid.style.display='block';can.style.display='none';document.getElementById('status').textContent='Ready - Face Locked ✓';};
-rec.start();let f=0;(function loop(){if(f>=total){rec.stop();return}const t=f/total;let z=1+t*0.2;const iw=main.width,ih=main.height,sc=Math.max(can.width/iw,can.height/ih)*z;ctx.drawImage(main,0,0,iw,ih,(can.width-iw*sc)/2,(can.height-ih*sc)/2,iw*sc,ih*sc);f++;setTimeout(()=>requestAnimationFrame(loop),125)})();
-}
-function download(){if(!blob)return alert('Generate first');const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='motionscape.mp4';a.click();}
+let main=new Image(), blob=null;
+for(let i=0;i<5;i++){document.getElementById('f'+i).onchange=e=>{let f=e.target.files[0];if(!f)return;let u=URL.createObjectURL(f);let im=document.getElementById('i'+i);im.src=u;im.style.display='block';if(i==0)main.src=u;}};
+function gen(){if(!main.src)return alert('Upload Main');let can=document.getElementById('can'),ctx=can.getContext('2d'),vid=document.getElementById('vid');can.width=1280;can.height=720;can.style.display='block';vid.style.display='none';let stream=can.captureStream(8),rec=new MediaRecorder(stream,{mimeType:'video/webm'}),ch=[];rec.ondataavailable=e=>ch.push(e.data);rec.onstop=()=>{blob=new Blob(ch,{type:'video/webm'});vid.src=URL.createObjectURL(blob);vid.style.display='block';can.style.display='none';};rec.start();let f=0,total=40;(function l(){if(f>=total){rec.stop();return}let t=f/total,z=1+t*0.2,iw=main.width,ih=main.height,sc=Math.max(can.width/iw,can.height/ih)*z;ctx.drawImage(main,0,0,iw,ih,(can.width-iw*sc)/2,(can.height-ih*sc)/2,iw*sc,ih*sc);f++;setTimeout(()=>requestAnimationFrame(l),125)})()}
+function exp(){if(!blob)return alert('Gen first');let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='motionscape.webm';a.click();}
 </script>
 </body></html>
